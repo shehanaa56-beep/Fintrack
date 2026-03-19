@@ -1,0 +1,23 @@
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #fdf8fb; /* Very light pink/white background */
+}
+
+.content-area {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 80px; /* Space for bottom nav */
+}
+
+@media (max-width: 900px) {
+  .app-layout {
+    flex-direction: column;
+  }
+  .content-area {
+    padding-bottom: 90px;
+  }
+  .page-container {
+    padding: 24px 16px;
+  }
+}
