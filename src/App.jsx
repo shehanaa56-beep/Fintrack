@@ -12,6 +12,7 @@ import Salary from './pages/Salary';
 import './App.css';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
+import Profile from './pages/Profile';
 
 function AppContent() {
   const { isAuthenticated } = useAuth();
@@ -27,6 +28,7 @@ function AppContent() {
         <main className="content-area">
           <Routes>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/income" element={<Income />} />
             <Route path="/expenses" element={<Expenses />} />
             <Route path="/savings" element={<Savings />} />
@@ -44,11 +46,11 @@ function AppContent() {
 
 function App() {
   return (
-    <FinanceProvider>
-      <AuthProvider>
+    <AuthProvider>
+      <FinanceProvider>
         <AppContent />
-      </AuthProvider>
-    </FinanceProvider>
+      </FinanceProvider>
+    </AuthProvider>
   );
 }
 

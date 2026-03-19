@@ -6,9 +6,10 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     
@@ -17,9 +18,17 @@ const Login = () => {
       return;
     }
 
-    const success = login(email, password);
-    if (!success) {
-      setError('Invalid credentials. Please try again.');
+    setLoading(true);
+    try {
+      await login(email, password);
+    } catch (err) {
+      if (err.message === 'Unauthorized email') {
+        setError('Only authorized users can access this application.');
+      } else {
+        setError('Invalid email or password. Please try again.');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -55,6 +64,7 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   autoComplete="email"
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -70,21 +80,22 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete="current-password"
+                  disabled={loading}
                 />
               </div>
             </div>
 
             <div className="form-options">
               <label className="remember-me">
-                <input type="checkbox" />
+                <input type="checkbox" disabled={loading} />
                 <span>Remember me</span>
               </label>
               <a href="#" className="forgot-password">Forgot password?</a>
             </div>
 
-            <button type="submit" className="login-btn">
-              Login to Dashboard
-              <i className="bi bi-arrow-right"></i>
+            <button type="submit" className="login-btn" disabled={loading}>
+              {loading ? 'Logging in...' : 'Login to Dashboard'}
+              {!loading && <i className="bi bi-arrow-right"></i>}
             </button>
           </form>
 

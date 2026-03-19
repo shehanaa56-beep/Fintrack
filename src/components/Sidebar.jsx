@@ -7,6 +7,7 @@ const navItems = [
   { to: '/income', label: 'Income', icon: <i className="bi bi-graph-up-arrow"></i> },
   { to: '/expenses', label: 'Expenses', icon: <i className="bi bi-graph-down-arrow"></i> },
   { to: '/savings', label: 'Savings', icon: <i className="bi bi-piggy-bank-fill"></i> },
+  { to: '/profile', label: 'Profile', icon: <i className="bi bi-person-circle"></i> },
 ];
 
 const officeItems = [
@@ -19,7 +20,7 @@ import { useAuth } from '../context/AuthContext';
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const { logout } = useAuth();
+  const { logout, profile } = useAuth();
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const closeMenu = () => setIsOpen(false);
@@ -33,9 +34,16 @@ const Sidebar = () => {
       {isOpen && <div className="sidebar-overlay" onClick={closeMenu}></div>}
 
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
-        <div className="sidebar-logo">
-          <i className="bi bi-heart-fill" style={{ color: '#e91871', fontSize: '1.2rem' }}></i>
-          <span>FinTrack</span>
+        <div className="sidebar-header">
+          <div className="user-profile">
+            <div className="user-avatar">
+              <i className="bi bi-person"></i>
+            </div>
+            <div className="user-info">
+              <span className="user-name">{profile?.name || 'Oozbek'}</span>
+              <span className="user-role">{profile?.role || 'Operator'}</span>
+            </div>
+          </div>
           <button className="close-sidebar" onClick={closeMenu}>
             <i className="bi bi-x-lg"></i>
           </button>

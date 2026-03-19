@@ -1,57 +1,117 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { db } from '../firebase';
+import { useAuth } from './AuthContext';
+import { ref, onValue, push, set, remove } from 'firebase/database';
 
 const FinanceContext = createContext();
 
 export const useFinance = () => useContext(FinanceContext);
 
-const loadFromStorage = (key, fallback) => {
-  try {
-    const stored = localStorage.getItem(key);
-    return stored ? JSON.parse(stored) : fallback;
-  } catch {
-    return fallback;
-  }
-};
-
 export const FinanceProvider = ({ children }) => {
-  const [income, setIncome] = useState(() => loadFromStorage('fintrack_income', []));
-  const [expenses, setExpenses] = useState(() => loadFromStorage('fintrack_expenses', []));
-  const [savings, setSavings] = useState(() => loadFromStorage('fintrack_savings', []));
-  const [leaves, setLeaves] = useState(() => loadFromStorage('fintrack_leaves', []));
-  const [extraHours, setExtraHours] = useState(() => loadFromStorage('fintrack_extraHours', []));
-  const [salaries, setSalaries] = useState(() => loadFromStorage('fintrack_salaries', []));
+  const { user } = useAuth();
+  const [income, setIncome] = useState([]);
+  const [expenses, setExpenses] = useState([]);
+  const [savings, setSavings] = useState([]);
+  const [leaves, setLeaves] = useState([]);
+  const [extraHours, setExtraHours] = useState([]);
+  const [salaries, setSalaries] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => { localStorage.setItem('fintrack_income', JSON.stringify(income)); }, [income]);
-  useEffect(() => { localStorage.setItem('fintrack_expenses', JSON.stringify(expenses)); }, [expenses]);
-  useEffect(() => { localStorage.setItem('fintrack_savings', JSON.stringify(savings)); }, [savings]);
-  useEffect(() => { localStorage.setItem('fintrack_leaves', JSON.stringify(leaves)); }, [leaves]);
-  useEffect(() => { localStorage.setItem('fintrack_extraHours', JSON.stringify(extraHours)); }, [extraHours]);
-  useEffect(() => { localStorage.setItem('fintrack_salaries', JSON.stringify(salaries)); }, [salaries]);
+  useEffect(() => {
+    if (!user) {
+      setIncome([]);
+      setExpenses([]);
+      setSavings([]);
+      setLeaves([]);
+      setExtraHours([]);
+      setSalaries([]);
+      return;
+    }
 
-  const addIncome = (entry) => setIncome(prev => [{ ...entry, id: Date.now() }, ...prev]);
-  const deleteIncome = (id) => setIncome(prev => prev.filter(e => e.id !== id));
+    const financeRef = ref(db, `users/${user.uid}/finance`);
+    
+    const unsubscribe = onValue(financeRef, (snapshot) => {
+      const data = snapshot.val() || {};
+      
+      const process = (obj) => obj ? Object.entries(obj).map(([id, val]) => ({ ...val, id })) : [];
+      
+      setIncome(process(data.income));
+      setExpenses(process(data.expenses));
+      setSavings(process(data.savings));
+      setLeaves(process(data.leaves));
+      setExtraHours(process(data.extraHours));
+      setSalaries(process(data.salaries));
+      setLoading(false);
+    });
 
-  const addExpense = (entry) => setExpenses(prev => [{ ...entry, id: Date.now() }, ...prev]);
-  const deleteExpense = (id) => setExpenses(prev => prev.filter(e => e.id !== id));
+    return unsubscribe;
+  }, [user]);
 
-  const addSaving = (entry) => setSavings(prev => [{ ...entry, id: Date.now() }, ...prev]);
-  const deleteSaving = (id) => setSavings(prev => prev.filter(e => e.id !== id));
+  const addIncome = (entry) => {
+    if (!user) return;
+    const itemRef = push(ref(db, `users/${user.uid}/finance/income`));
+    set(itemRef, { ...entry, createdAt: Date.now() });
+  };
+  const deleteIncome = (id) => {
+    if (!user) return;
+    remove(ref(db, `users/${user.uid}/finance/income/${id}`));
+  };
 
-  const addLeaf = (entry) => setLeaves(prev => [{ ...entry, id: Date.now() }, ...prev]);
-  const deleteLeaf = (id) => setLeaves(prev => prev.filter(e => e.id !== id));
+  const addExpense = (entry) => {
+    if (!user) return;
+    const itemRef = push(ref(db, `users/${user.uid}/finance/expenses`));
+    set(itemRef, { ...entry, createdAt: Date.now() });
+  };
+  const deleteExpense = (id) => {
+    if (!user) return;
+    remove(ref(db, `users/${user.uid}/finance/expenses/${id}`));
+  };
 
-  const addExtraHour = (entry) => setExtraHours(prev => [{ ...entry, id: Date.now() }, ...prev]);
-  const deleteExtraHour = (id) => setExtraHours(prev => prev.filter(e => e.id !== id));
+  const addSaving = (entry) => {
+    if (!user) return;
+    const itemRef = push(ref(db, `users/${user.uid}/finance/savings`));
+    set(itemRef, { ...entry, createdAt: Date.now() });
+  };
+  const deleteSaving = (id) => {
+    if (!user) return;
+    remove(ref(db, `users/${user.uid}/finance/savings/${id}`));
+  };
 
-  const addSalary = (entry) => setSalaries(prev => [{ ...entry, id: Date.now() }, ...prev]);
-  const deleteSalary = (id) => setSalaries(prev => prev.filter(e => e.id !== id));
+  const addLeaf = (entry) => {
+    if (!user) return;
+    const itemRef = push(ref(db, `users/${user.uid}/finance/leaves`));
+    set(itemRef, { ...entry, createdAt: Date.now() });
+  };
+  const deleteLeaf = (id) => {
+    if (!user) return;
+    remove(ref(db, `users/${user.uid}/finance/leaves/${id}`));
+  };
+
+  const addExtraHour = (entry) => {
+    if (!user) return;
+    const itemRef = push(ref(db, `users/${user.uid}/finance/extraHours`));
+    set(itemRef, { ...entry, createdAt: Date.now() });
+  };
+  const deleteExtraHour = (id) => {
+    if (!user) return;
+    remove(ref(db, `users/${user.uid}/finance/extraHours/${id}`));
+  };
+
+  const addSalary = (entry) => {
+    if (!user) return;
+    const itemRef = push(ref(db, `users/${user.uid}/finance/salaries`));
+    set(itemRef, { ...entry, createdAt: Date.now() });
+  };
+  const deleteSalary = (id) => {
+    if (!user) return;
+    remove(ref(db, `users/${user.uid}/finance/salaries/${id}`));
+  };
 
   const totalIncome = income.reduce((s, e) => s + Number(e.amount), 0);
   const totalExpenses = expenses.reduce((s, e) => s + Number(e.amount), 0);
   const totalSavings = savings.reduce((s, e) => s + Number(e.amount), 0);
   const netBalance = totalIncome - totalExpenses - totalSavings;
 
-  // Build monthly trends data
   const getMonthlyTrends = () => {
     const map = {};
     const process = (entries, key) => {
@@ -85,6 +145,7 @@ export const FinanceProvider = ({ children }) => {
       addSalary, deleteSalary,
       totalIncome, totalExpenses, totalSavings, netBalance,
       getMonthlyTrends, allTransactions,
+      loading
     }}>
       {children}
     </FinanceContext.Provider>
