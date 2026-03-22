@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useFinance } from '../context/FinanceContext';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import './PageStyles.css';
 
 const today = new Date().toISOString().split('T')[0];
@@ -16,7 +18,62 @@ const ExtraHours = () => {
     setForm({ date: today, hours: '', description: '' });
   };
 
-  const totalHours = extraHours.reduce((sum, h) => sum + Number(h.hours), 0);
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth();
+  const currentYear = currentDate.getFullYear();
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const currentMonthName = monthNames[currentMonth];
+
+  const monthlyExtraHours = extraHours.filter(h => {
+    const d = new Date(h.date);
+    return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+  });
+
+  const totalMonthlyHours = monthlyExtraHours.reduce((sum, h) => sum + Number(h.hours), 0);
+
+  const archiveData = extraHours.reduce((acc, h) => {
+    const d = new Date(h.date);
+    const m = d.getMonth();
+    const y = d.getFullYear();
+    const key = `${y}-${m}`;
+    if (!acc[key]) acc[key] = { month: m, year: y, data: [] };
+    acc[key].data.push(h);
+    return acc;
+  }, {});
+
+  const sortedArchiveKeys = Object.keys(archiveData).sort((a, b) => {
+    const [yA, mA] = a.split('-');
+    const [yB, mB] = b.split('-');
+    if (yA !== yB) return Number(yB) - Number(yA);
+    return Number(mB) - Number(mA);
+  });
+
+  const handleDownloadPDF = (monthIndex, year, monthData) => {
+    const doc = new jsPDF();
+    const targetMonthName = monthNames[monthIndex];
+    
+    doc.text(`${targetMonthName} ${year} - Extra Hours Report`, 14, 15);
+    
+    const sortedData = [...monthData].sort((a, b) => new Date(b.date) - new Date(a.date));
+    const totalSelectedHours = sortedData.reduce((sum, h) => sum + Number(h.hours), 0);
+
+    const tableData = sortedData.map(h => [
+      new Date(h.date).toLocaleDateString(),
+      h.hours,
+      h.description || 'Overtime'
+    ]);
+
+    autoTable(doc, {
+      startY: 25,
+      head: [['Date', 'Hours', 'Description']],
+      body: tableData,
+      foot: [['Total', totalSelectedHours, '']],
+      theme: 'grid',
+      headStyles: { fillColor: [233, 24, 113] }, // Pink background
+    });
+
+    doc.save(`${targetMonthName}_${year}_ExtraHours.pdf`);
+  };
 
   return (
     <div className="page-container">
@@ -27,7 +84,7 @@ const ExtraHours = () => {
         </div>
         <div className="page-badge income-badge">
           <i className="bi bi-clock-fill"></i>
-          {totalHours} Hrs
+          {totalMonthlyHours} Hrs
         </div>
       </div>
 
@@ -51,10 +108,10 @@ const ExtraHours = () => {
         </div>
       </form>
 
-      <h2 className="section-title">Extra Hours History</h2>
-      {extraHours.length === 0 ? <p className="empty-state">No extra hours recorded yet</p> : (
+      <h2 className="section-title">{currentMonthName} {currentYear} History</h2>
+      {monthlyExtraHours.length === 0 ? <p className="empty-state">No extra hours recorded for {currentMonthName}</p> : (
         <div className="entries-list">
-          {extraHours.map(h => (
+          {monthlyExtraHours.map(h => (
             <div key={h.id} className="transaction-entry income">
               <div className="entry-icon-bg"><i className="bi bi-alarm-fill"></i></div>
               <div className="entry-main">
@@ -71,6 +128,28 @@ const ExtraHours = () => {
           ))}
         </div>
       )}
+
+      <div className="monthly-archive-section">
+        <h2 className="section-title">Monthly Archive</h2>
+        {sortedArchiveKeys.length === 0 ? <p className="empty-state">No past records to archive</p> : (
+          <div className="archive-list">
+            {sortedArchiveKeys.map(key => {
+              const { month, year, data } = archiveData[key];
+              return (
+                <button 
+                  key={key} 
+                  type="button" 
+                  className="archive-btn" 
+                  onClick={() => handleDownloadPDF(month, year, data)}
+                >
+                  <span className="archive-badge">PDF</span>
+                  <span className="archive-month">{monthNames[month]} {year}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

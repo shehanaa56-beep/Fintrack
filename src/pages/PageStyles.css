@@ -59,6 +59,30 @@ body {
 }
 
 @media (max-width: 600px) {
+  .page-container {
+    padding: 20px 16px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .page-title {
+    font-size: 1.6rem;
+  }
+
+  .page-badge {
+    padding: 8px 14px;
+    font-size: 0.95rem;
+  }
+
+  .entry-form {
+    padding: 18px;
+    border-radius: 18px;
+  }
+
   .form-grid {
     grid-template-columns: 1fr;
     gap: 16px;
@@ -66,6 +90,39 @@ body {
   
   .form-group[style*="grid-column: span 2"] {
     grid-column: span 1 !important;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+  }
+
+  .transaction-entry {
+    padding: 14px 16px;
+    gap: 12px;
+    border-radius: 16px;
+  }
+
+  .entry-icon-bg {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .entry-category {
+    font-size: 0.95rem;
+  }
+
+  .entry-date {
+    font-size: 0.8rem;
+  }
+
+  .entry-amount {
+    font-size: 1rem;
+  }
+
+  .btn-add {
+    padding: 10px 24px;
+    font-size: 0.9rem;
   }
 }
 
@@ -140,3 +197,66 @@ body {
   font-style: italic;
   font-size: 0.95rem;
 }
+
+.monthly-archive-section {
+  margin-top: 40px;
+}
+
+.archive-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.archive-btn {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background-color: #fce4ec;
+  border: none;
+  border-radius: 16px;
+  padding: 14px 24px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 500px;
+  transition: all 0.2s ease;
+}
+
+.archive-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(233, 24, 113, 0.15);
+}
+
+.archive-badge {
+  background-color: #e91871;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.85rem;
+  padding: 6px 14px;
+  border-radius: 8px;
+  letter-spacing: 0.5px;
+}
+
+.archive-month {
+  color: #1a1a2e;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 600px) {
+  .archive-btn {
+    padding: 12px 16px;
+    border-radius: 14px;
+    gap: 12px;
+  }
+  
+  .archive-badge {
+    padding: 5px 12px;
+    font-size: 0.75rem;
+  }
+  
+  .archive-month {
+    font-size: 1rem;
+  }
+}
+
