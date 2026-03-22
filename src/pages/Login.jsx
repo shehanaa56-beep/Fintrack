@@ -99,7 +99,6 @@ const Login = () => {
                 <input type="checkbox" disabled={loading} />
                 <span>Remember me</span>
               </label>
-              <a href="#" className="forgot-password">Forgot password?</a>
             </div>
 
             <button type="submit" className="login-btn" disabled={loading}>
@@ -107,10 +106,6 @@ const Login = () => {
               {!loading && <i className="bi bi-arrow-right"></i>}
             </button>
           </form>
-
-          <div className="login-footer">
-            <p>Don't have an account? <a href="#">Sign up for free</a></p>
-          </div>
         </div>
       </div>
     </div>

@@ -64,3 +64,59 @@
   color: #ff4444;
   background: #fff0f0;
 }
+
+@media (max-width: 600px) {
+  .transaction-entry {
+    padding: 14px 16px;
+    gap: 12px;
+    border-radius: 16px;
+    align-items: flex-start;
+  }
+
+  .entry-main {
+    min-width: 0;
+  }
+
+  .entry-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  
+  .entry-row.secondary {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .entry-icon-bg {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    font-size: 1rem;
+    margin-top: 4px;
+  }
+
+  .entry-category {
+    font-size: 1rem;
+  }
+
+  .entry-amount {
+    font-size: 1.05rem;
+  }
+
+  .entry-date {
+    font-size: 0.85rem;
+  }
+
+  .entry-row.secondary {
+    font-size: 0.85rem;
+  }
+
+  .btn-delete {
+    font-size: 1rem;
+    padding: 6px;
+    margin-top: 4px;
+  }
+}
+

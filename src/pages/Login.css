@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  background-color: #f8f9ff;
+  background-color: #fdf5f7;
   overflow: hidden;
   font-family: var(--font-main);
 }
@@ -29,7 +29,7 @@
 .shape-1 {
   width: 400px;
   height: 400px;
-  background: linear-gradient(135deg, #e91871, #630da0);
+  background: linear-gradient(135deg, #ffa6c9, #e91871);
   top: -100px;
   right: -50px;
   animation-delay: 0s;
@@ -38,7 +38,7 @@
 .shape-2 {
   width: 350px;
   height: 350px;
-  background: linear-gradient(135deg, #00ba7c, #00f5d4);
+  background: linear-gradient(135deg, #ffd1e3, #ff8da1);
   bottom: -80px;
   left: -50px;
   animation-delay: -5s;
@@ -47,7 +47,7 @@
 .shape-3 {
   width: 250px;
   height: 250px;
-  background: linear-gradient(135deg, #f59e0b, #e91871);
+  background: linear-gradient(135deg, #e91871, #a30b4b);
   top: 40%;
   left: 20%;
   opacity: 0.3;
@@ -192,7 +192,7 @@
 }
 
 .login-btn {
-  background: linear-gradient(135deg, #e91871, #630da0);
+  background: linear-gradient(135deg, #e91871, #a30b4b);
   color: white;
   padding: 16px;
   border: none;

@@ -152,3 +152,76 @@
 .entry-amt.income { color: #2ecc71; }
 .entry-amt.expense { color: #e91871; }
 .entry-amt.saving { color: #9c27b0; }
+
+@media (max-width: 600px) {
+  .dashboard-container {
+    padding: 80px 16px 20px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  .stat-value {
+    font-size: 1.4rem;
+  }
+
+  .stat-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    font-size: 1.2rem;
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .chart-card {
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .chart-title {
+    font-size: 1rem;
+  }
+
+  .empty-chart {
+    height: 200px;
+  }
+
+  .recent-transactions {
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .recent-transactions h3 {
+    font-size: 1rem;
+    margin-bottom: 14px;
+  }
+
+  .mini-transaction {
+    padding: 10px 0;
+  }
+
+  .entry-cat {
+    font-size: 0.85rem;
+  }
+
+  .entry-amt {
+    font-size: 0.9rem;
+  }
+}
+
