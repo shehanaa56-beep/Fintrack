@@ -3,9 +3,15 @@ import { createRoot } from 'react-dom/client'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import './index.css'
 import App from './App.jsx'
+import { AuthProvider } from './context/AuthContext'
+import { FinanceProvider } from './context/FinanceContext'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <AuthProvider>
+      <FinanceProvider>
+        <App />
+      </FinanceProvider>
+    </AuthProvider>
   </StrictMode>,
 )

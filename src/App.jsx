@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { FinanceProvider } from './context/FinanceContext';
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
 import Income from './pages/Income';
@@ -10,7 +9,7 @@ import Leaves from './pages/Leaves';
 import ExtraHours from './pages/ExtraHours';
 import Salary from './pages/Salary';
 import './App.css';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 
@@ -45,13 +44,7 @@ function AppContent() {
 }
 
 function App() {
-  return (
-    <AuthProvider>
-      <FinanceProvider>
-        <AppContent />
-      </FinanceProvider>
-    </AuthProvider>
-  );
+  return <AppContent />;
 }
 
 export default App;

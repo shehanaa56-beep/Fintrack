@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../firebase';
-import { ref, onValue, set } from 'firebase/database';
+import { ref, onValue, update } from 'firebase/database';
 import './Profile.css';
-
 const Profile = () => {
   const { user } = useAuth();
-  const [name, setName] = useState('Oozbek');
-  const [role, setRole] = useState('Operator');
+  const [name, setName] = useState('FinTrack User');
   const [email, setEmail] = useState(user?.email || '');
   const [password, setPassword] = useState('sha5656');
   const [showPassword, setShowPassword] = useState(false);
+  const [avatar, setAvatar] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (!user) return;
@@ -20,8 +21,8 @@ const Profile = () => {
     const unsubscribe = onValue(profileRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        setName(data.name || 'Oozbek');
-        setRole(data.role || 'Operator');
+        setName(data.name || 'FinTrack User');
+        if (data.avatar) setAvatar(data.avatar);
       }
       setLoading(false);
     });
@@ -29,14 +30,41 @@ const Profile = () => {
     return unsubscribe;
   }, [user]);
 
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file || !user) return;
+
+    if (file.size > 1048576) {
+      alert('Image is too large. Please choose an image under 1MB.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      try {
+        setUploading(true);
+        const base64String = event.target.result;
+        
+        await update(ref(db, `users/${user.uid}/profile`), { avatar: base64String });
+        setAvatar(base64String);
+        alert('Avatar uploaded successfully!');
+      } catch (error) {
+        console.error("Avatar upload error:", error);
+        alert('Failed to upload avatar.');
+      } finally {
+        setUploading(false);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleUpdate = async (e) => {
     e.preventDefault();
     if (!user) return;
 
     try {
-      await set(ref(db, `users/${user.uid}/profile`), {
-        name,
-        role
+      await update(ref(db, `users/${user.uid}/profile`), {
+        name
       });
       alert('Profile updated successfully!');
     } catch (error) {
@@ -57,11 +85,27 @@ const Profile = () => {
         <form onSubmit={handleUpdate}>
           <div className="avatar-section">
             <div className="avatar-container">
-              <div className="avatar-placeholder">
-                <i className="bi bi-person"></i>
-              </div>
-              <button type="button" className="change-avatar-btn">
-                <i className="bi bi-camera-fill"></i>
+              {avatar ? (
+                <img src={avatar} alt="Avatar" className="avatar-image" />
+              ) : (
+                <div className="avatar-placeholder">
+                  <i className="bi bi-person"></i>
+                </div>
+              )}
+              <input 
+                type="file" 
+                accept="image/*" 
+                style={{ display: 'none' }} 
+                ref={fileInputRef} 
+                onChange={handleImageUpload} 
+              />
+              <button 
+                type="button" 
+                className="change-avatar-btn" 
+                onClick={() => fileInputRef.current.click()}
+                disabled={uploading}
+              >
+                {uploading ? <i className="bi bi-hourglass-split"></i> : <i className="bi bi-camera-fill"></i>}
               </button>
             </div>
           </div>
@@ -75,19 +119,6 @@ const Profile = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Full Name"
-              />
-            </div>
-          </div>
-
-          <div className="profile-form-group">
-            <label className="form-label">Role</label>
-            <div className="input-with-icon">
-              <i className="bi bi-briefcase-fill"></i>
-              <input
-                type="text"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                placeholder="Role"
               />
             </div>
           </div>

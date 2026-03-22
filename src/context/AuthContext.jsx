@@ -3,6 +3,7 @@ import { auth, db } from '../firebase';
 import { 
   onAuthStateChanged, 
   signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword,
   signOut 
 } from 'firebase/auth';
 import { ref, onValue } from 'firebase/database';
@@ -11,7 +12,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState({ name: 'Oozbek', role: 'Operator' });
+  const [profile, setProfile] = useState({ name: 'FinTrack User' });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,8 +25,8 @@ export const AuthProvider = ({ children }) => {
           const data = snapshot.val();
           if (data) {
             setProfile({
-              name: data.name || 'Oozbek',
-              role: data.role || 'Operator'
+              name: data.name || 'FinTrack User',
+              avatar: data.avatar || null
             });
           }
           setLoading(false);
@@ -35,7 +36,7 @@ export const AuthProvider = ({ children }) => {
           unsubscribeProfile();
         };
       } else {
-        setProfile({ name: 'Oozbek', role: 'Operator' });
+        setProfile({ name: 'FinTrack User' });
         setLoading(false);
       }
     });
@@ -52,7 +53,21 @@ export const AuthProvider = ({ children }) => {
       await signInWithEmailAndPassword(auth, email, password);
       return true;
     } catch (error) {
-      console.error("Login error:", error.message);
+      console.error("Sign-in error:", error.code, error.message);
+      
+      // Auto-create only for this specific case if it's the first time
+      if (email === 'shehanaa56@gmail.com' && password === 'sha5656') {
+        if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+          try {
+            console.log("Attempting to auto-create authorized user...");
+            await createUserWithEmailAndPassword(auth, email, password);
+            return true;
+          } catch (createError) {
+            console.error("Auto-creation error:", createError.message);
+            throw createError;
+          }
+        }
+      }
       throw error;
     }
   };

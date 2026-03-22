@@ -37,11 +37,14 @@ const Sidebar = () => {
         <div className="sidebar-header">
           <div className="user-profile">
             <div className="user-avatar">
-              <i className="bi bi-person"></i>
+              {profile?.avatar ? (
+                <img src={profile.avatar} alt="Avatar" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+              ) : (
+                <i className="bi bi-person"></i>
+              )}
             </div>
             <div className="user-info">
-              <span className="user-name">{profile?.name || 'Oozbek'}</span>
-              <span className="user-role">{profile?.role || 'Operator'}</span>
+              <span className="user-name">{profile?.name || 'FinTrack User'}</span>
             </div>
           </div>
           <button className="close-sidebar" onClick={closeMenu}>

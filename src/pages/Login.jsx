@@ -22,10 +22,19 @@ const Login = () => {
     try {
       await login(email, password);
     } catch (err) {
+      console.error("Login catch:", err);
+      const errorCode = err.code || '';
+      
       if (err.message === 'Unauthorized email') {
         setError('Only authorized users can access this application.');
+      } else if (errorCode === 'auth/invalid-credential' || errorCode === 'auth/user-not-found' || errorCode === 'auth/wrong-password') {
+        setError('Invalid credentials. Please verify your email and password in the Firebase Console.');
+      } else if (errorCode === 'auth/too-many-requests') {
+        setError('Too many failed attempts. Please try again later or reset your password.');
+      } else if (errorCode === 'auth/network-request-failed') {
+        setError('Network error. Please check your internet connection.');
       } else {
-        setError('Invalid email or password. Please try again.');
+        setError(err.message || 'An unexpected error occurred. Please try again.');
       }
     } finally {
       setLoading(false);
