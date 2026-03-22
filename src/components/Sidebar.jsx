@@ -27,9 +27,17 @@ const Sidebar = () => {
 
   return (
     <>
-      <button className="mobile-toggle" onClick={toggleMenu}>
-        <i className={`bi ${isOpen ? 'bi-x-lg' : 'bi-list'}`}></i>
-      </button>
+      <div className="mobile-header">
+        <div className="mobile-logo-section">
+          <div className="mobile-logo-icon">
+            <img src="/logo.png" alt="FinTrack Logo" className="logo-img" />
+          </div>
+          <span className="mobile-logo-text">FinTrack</span>
+        </div>
+        <button className="mobile-toggle" onClick={toggleMenu}>
+          <i className={`bi ${isOpen ? 'bi-x-lg' : 'bi-list'}`}></i>
+        </button>
+      </div>
 
       {isOpen && <div className="sidebar-overlay" onClick={closeMenu}></div>}
 

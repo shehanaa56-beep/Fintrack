@@ -60,7 +60,7 @@ body {
 
 @media (max-width: 600px) {
   .page-container {
-    padding: 80px 16px 20px;
+    padding: 20px 16px;
   }
 
   .page-header {

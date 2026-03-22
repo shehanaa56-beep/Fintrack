@@ -155,7 +155,7 @@
 
 @media (max-width: 600px) {
   .dashboard-container {
-    padding: 80px 16px 20px;
+    padding: 20px 16px;
   }
 
   .dashboard-header h1 {
