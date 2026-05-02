@@ -107,9 +107,11 @@ const Login = () => {
               {!loading && <i className="bi bi-arrow-right"></i>}
             </button>
 
+{/* 
             <div className="auth-footer" style={{ textAlign: 'center', marginTop: '1.5rem', color: 'rgba(255,255,255,0.7)' }}>
               Don't have an account? <Link to="/signup" style={{ color: '#6366f1', fontWeight: '600', textDecoration: 'none' }}>Sign up here</Link>
             </div>
+            */}
           </form>
         </div>
       </div>
