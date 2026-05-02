@@ -13,6 +13,7 @@ import { useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Profile from './pages/Profile';
+import InstallPWA from './components/InstallPWA';
 
 function AppContent() {
   const { isAuthenticated, loading } = useAuth();
@@ -28,6 +29,7 @@ function AppContent() {
 
   return (
     <Router>
+      <InstallPWA />
       {!isAuthenticated ? (
         <Routes>
           <Route path="/login" element={<Login />} />
