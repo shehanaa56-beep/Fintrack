@@ -45,29 +45,31 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    if (email !== 'shehanaa56@gmail.com') {
-      throw new Error('Unauthorized email');
-    }
-    
     try {
       await signInWithEmailAndPassword(auth, email, password);
       return true;
     } catch (error) {
       console.error("Sign-in error:", error.code, error.message);
+      throw error;
+    }
+  };
+
+  const signup = async (email, password, name) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
       
-      // Auto-create only for this specific case if it's the first time
-      if (email === 'shehanaa56@gmail.com' && password === 'sha5656') {
-        if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-          try {
-            console.log("Attempting to auto-create authorized user...");
-            await createUserWithEmailAndPassword(auth, email, password);
-            return true;
-          } catch (createError) {
-            console.error("Auto-creation error:", createError.message);
-            throw createError;
-          }
-        }
-      }
+      // Initialize profile in Database
+      const { set } = await import('firebase/database');
+      const profileRef = ref(db, `users/${user.uid}/profile`);
+      await set(profileRef, {
+        name: name || 'FinTrack User',
+        createdAt: new Date().toISOString()
+      });
+      
+      return true;
+    } catch (error) {
+      console.error("Signup error:", error.code, error.message);
       throw error;
     }
   };
@@ -81,6 +83,7 @@ export const AuthProvider = ({ children }) => {
     profile,
     isAuthenticated: !!user,
     login,
+    signup,
     logout,
     loading
   };
