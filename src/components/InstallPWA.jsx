@@ -4,31 +4,33 @@ import './InstallPWA.css';
 const InstallPWA = () => {
   const [supportsPWA, setSupportsPWA] = useState(false);
   const [promptInstall, setPromptInstall] = useState(null);
+  const [isIOS, setIsIOS] = useState(false);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    // Detect iOS
+    const isIosDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    setIsIOS(isIosDevice);
+
     const handler = (e) => {
       e.preventDefault();
-      console.log("we are being triggered :");
+      console.log("Install prompt event triggered!");
       setSupportsPWA(true);
       setPromptInstall(e);
-      
-      // Show the prompt
       setVisible(true);
-
-      // Hide the prompt after 10 seconds if not clicked
-      const timer = setTimeout(() => {
-        setVisible(false);
-      }, 10000);
-
-      return () => clearTimeout(timer);
     };
 
     window.addEventListener("beforeinstallprompt", handler);
 
+    // If it's iOS and not already installed, show instructions
+    if (isIosDevice && !window.matchMedia('(display-mode: standalone)').matches) {
+      setSupportsPWA(true);
+      setVisible(true);
+    }
+
     // Check if app is already installed
     if (window.matchMedia('(display-mode: standalone)').matches) {
-      setSupportsPWA(false);
+      setVisible(false);
     }
 
     return () => window.removeEventListener("beforeinstallprompt", handler);
@@ -36,9 +38,15 @@ const InstallPWA = () => {
 
   const onClick = (evt) => {
     evt.preventDefault();
+    if (isIOS) {
+      alert('To install FinTrack on your iPhone/iPad: \n1. Click the "Share" button at the bottom of Safari.\n2. Scroll down and click "Add to Home Screen".');
+      return;
+    }
+    
     if (!promptInstall) {
       return;
     }
+    
     promptInstall.prompt();
     promptInstall.userChoice.then((choiceResult) => {
       if (choiceResult.outcome === 'accepted') {
@@ -50,7 +58,7 @@ const InstallPWA = () => {
     });
   };
 
-  if (!visible || !supportsPWA) {
+  if (!visible) {
     return null;
   }
 
@@ -61,12 +69,12 @@ const InstallPWA = () => {
           <img src="/logo.png" alt="FinTrack" />
         </div>
         <div className="install-pwa-content">
-          <h3>Install FinTrack</h3>
-          <p>Add to your home screen for better experience.</p>
+          <h3>{isIOS ? 'Install FinTrack' : 'Get the App'}</h3>
+          <p>{isIOS ? 'Tap Share and "Add to Home Screen"' : 'Install for a better experience.'}</p>
         </div>
         <div className="install-pwa-actions">
           <button className="install-btn" onClick={onClick}>
-            Install
+            {isIOS ? 'How?' : 'Install'}
           </button>
           <button className="close-btn" onClick={() => setVisible(false)}>
             <i className="bi bi-x"></i>
