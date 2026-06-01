@@ -8,6 +8,7 @@ import Savings from './pages/Savings';
 import Leaves from './pages/Leaves';
 import ExtraHours from './pages/ExtraHours';
 import Salary from './pages/Salary';
+import Monthly from './pages/Monthly';
 import './App.css';
 import { useAuth } from './context/AuthContext';
 import Login from './pages/Login';
@@ -49,6 +50,7 @@ function AppContent() {
               <Route path="/leaves" element={<Leaves />} />
               <Route path="/extra-hours" element={<ExtraHours />} />
               <Route path="/salary" element={<Salary />} />
+              <Route path="/monthly" element={<Monthly />} />
               {/* Redirect any other unknown routes to dashboard */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

@@ -7,6 +7,7 @@ const navItems = [
   { to: '/income', label: 'Income', icon: <i className="bi bi-graph-up-arrow"></i> },
   { to: '/expenses', label: 'Expenses', icon: <i className="bi bi-graph-down-arrow"></i> },
   { to: '/savings', label: 'Savings', icon: <i className="bi bi-piggy-bank-fill"></i> },
+  { to: '/monthly', label: 'Monthly', icon: <i className="bi bi-calendar-month"></i> },
   { to: '/profile', label: 'Profile', icon: <i className="bi bi-person-circle"></i> },
 ];
 
