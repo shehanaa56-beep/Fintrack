@@ -117,7 +117,7 @@ export const FinanceProvider = ({ children }) => {
     const process = (entries, key) => {
       entries.forEach(e => {
         const d = new Date(e.date);
-        const label = d.toLocaleString('default', { month: 'short', year: '2-digit' });
+        const label = d.toLocaleString('default', { month: 'long', year: 'numeric' });
         if (!map[label]) map[label] = { month: label, income: 0, expenses: 0, savings: 0 };
         map[label][key] += Number(e.amount);
       });
